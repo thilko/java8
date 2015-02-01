@@ -1,5 +1,6 @@
 package com.thilko.java8;
 
+import com.sun.source.doctree.DocTree;
 import com.thilko.A500;
 import com.thilko.Person;
 import com.thilko.PersonFactory;
@@ -7,10 +8,7 @@ import com.thilko.Ventilator;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -194,23 +192,49 @@ public class A_Lambdas {
     }
 
     @Test
+    public void accessingContext() {
+        IntConsumer intConsumer = aMethod();
+        intConsumer.accept(39);
+    }
+
+    private IntConsumer aMethod() {
+        int theNumber = 42;
+        IntConsumer aLambda = (aNumber) -> {
+            System.out.println(aNumber * theNumber);
+        };
+
+        return aLambda;
+    }
+
+    // "this" in a lambda context points to the enclosing class, not the lambda itself
+
+    @Test
+    public void hiding() {
+        int theNumber = 2;
+        IntConsumer aLambda = (aNumber) -> {
+            // int theNumber =3; does not compile
+            System.out.println(aNumber * theNumber);
+        };
+    }
+
+    @Test
     public void functionalProgramming() {
         // from ...
         // find all female customers with a bmi over 20 and older than 30 years
         List<Customer> allCustomers = findAllCustomers();
         List<Customer> customerForAdvertisements = new ArrayList<>();
 
-        for(Customer customer: allCustomers){
-            if(customer.bmi()> 30 && customer.isFemale() && customer.olderThan(30)){
+        for (Customer customer : allCustomers) {
+            if (customer.bmi() > 30 && customer.isFemale() && customer.olderThan(30)) {
                 customerForAdvertisements.add(customer);
             }
         }
 
         // to...
-        customerForAdvertisements = allCustomers.stream().filter(customer -> customer.bmi()> 30)
-                                                         .filter(Customer::isFemale)
-                                                         .filter(customer -> customer.olderThan(30))
-                                                         .collect(Collectors.toList());
+        customerForAdvertisements = allCustomers.stream().filter(customer -> customer.bmi() > 30)
+                .filter(Customer::isFemale)
+                .filter(customer -> customer.olderThan(30))
+                .collect(Collectors.toList());
 
         // mapping...
         List<Double> allBmis = allCustomers.stream().map((customer) -> customer.bmi()).collect(Collectors.toList());
