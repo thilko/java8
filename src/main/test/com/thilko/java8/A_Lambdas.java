@@ -246,11 +246,34 @@ public class A_Lambdas {
     }
 
     @Test
-    public void comparator(){
+    public void comparator() {
         List<Customer> listOfCustomer = new ArrayList<>();
 
         Comparator<Customer> comp = Comparator.comparing(Customer::bmi).thenComparing(Customer::getAge);
         listOfCustomer.sort(comp);
+    }
+
+    @Test
+    public void defaultValuesInMapAccess() {
+        HashMap<String, Integer> customerAndAge = new HashMap<>();
+        customerAndAge.put("Darth", 52);
+
+        if(customerAndAge.containsKey("Darth")){
+            // do something
+        }else{
+            // do something else
+        }
+
+        // now...
+        customerAndAge.computeIfPresent("Darth", (name, age) -> {
+            return age;
+        });
+
+        // or...
+        customerAndAge.computeIfAbsent("Darth", (name) -> {
+            return 42;
+        });
+
     }
 
     @Test
