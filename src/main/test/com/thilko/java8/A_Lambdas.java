@@ -1,7 +1,6 @@
 package com.thilko.java8;
 
-import com.sun.source.doctree.DocTree;
-import com.thilko.A500;
+import com.thilko.V500;
 import com.thilko.Person;
 import com.thilko.PersonFactory;
 import com.thilko.Ventilator;
@@ -13,6 +12,7 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @SuppressWarnings("all")
 public class A_Lambdas {
@@ -87,13 +87,15 @@ public class A_Lambdas {
 
     @Test
     public void defaultMethods() {
-        Ventilator a500 = new A500();
-        a500.stop();
+        Ventilator v500 = new V500();
+        v500.stop();
     }
 
     @Test
     public void overloading() {
-        A500 machine = new A500();
+        V500 machine = new V500();
+
+        // we´ll get a compiler error if overloading is ambiguous
         machine.configure(System.out::println);
     }
 
@@ -168,8 +170,8 @@ public class A_Lambdas {
     }
 
     @Test
-    public void executeAroundPatter() {
-        // execute around pattern
+    public void patterns() {
+        // several GoF pattern are "build in" now
         perform((timeInMillis) -> {
                     if (timeInMillis % 1000 == 0) {
                         throw new IllegalStateException();
@@ -193,6 +195,7 @@ public class A_Lambdas {
 
     @Test
     public void accessingContext() {
+        // lamdbas captures the context where they were defined
         IntConsumer intConsumer = aMethod();
         intConsumer.accept(39);
     }
@@ -219,8 +222,9 @@ public class A_Lambdas {
 
     @Test
     public void functionalProgramming() {
-        // from ...
         // find all female customers with a bmi over 20 and older than 30 years
+
+        // from ...
         List<Customer> allCustomers = findAllCustomers();
         List<Customer> customerForAdvertisements = new ArrayList<>();
 
@@ -239,6 +243,14 @@ public class A_Lambdas {
         // mapping...
         List<Double> allBmis = allCustomers.stream().map((customer) -> customer.bmi()).collect(Collectors.toList());
 
+    }
+
+    @Test
+    public void comparator(){
+        List<Customer> listOfCustomer = new ArrayList<>();
+
+        Comparator<Customer> comp = Comparator.comparing(Customer::bmi).thenComparing(Customer::getAge);
+        listOfCustomer.sort(comp);
     }
 
     @Test

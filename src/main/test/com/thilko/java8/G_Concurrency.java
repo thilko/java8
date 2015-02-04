@@ -2,19 +2,16 @@ package com.thilko.java8;
 
 import org.junit.Test;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.atomic.DoubleAccumulator;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.DoubleAdder;
 import java.util.concurrent.atomic.LongAdder;
-import java.util.function.DoubleUnaryOperator;
+import java.util.stream.LongStream;
 
+@SuppressWarnings("all")
 public class G_Concurrency {
 
     @Test
-    public void forkJoinPool(){
+    public void forkJoinPool() {
         // ForkJoinPool is an extension of the AbstractExecutorService
         // work stealing algorithm
         // break work in smaller parts recursively
@@ -22,10 +19,11 @@ public class G_Concurrency {
     }
 
     @Test
-    public void completedFuture(){ }
+    public void completedFuture() {
+    }
 
     @Test
-    public void concurrentHashMap(){
+    public void concurrentHashMap() {
         ConcurrentHashMap<String, Integer> data = new ConcurrentHashMap<>();
         data.put("harry", 30);
         data.put("horst", 32);
@@ -37,12 +35,58 @@ public class G_Concurrency {
 
 
     @Test
-    public void adder(){
+    public void adder() {
         DoubleAdder doubleAdder = new DoubleAdder();
         doubleAdder.add(2.1);
 
         LongAdder longAdder = new LongAdder();
         longAdder.decrement();
         longAdder.increment();
+    }
+
+    @Test
+    public void stampedLock() throws InterruptedException {
+        long start = System.currentTimeMillis();
+        runBankExample(new NotThreadSafeBankAccount(0));
+        long end = System.currentTimeMillis();
+        System.out.println(String.format("Duration not thread safe: " + (end - start)));
+
+        start = System.currentTimeMillis();
+        runBankExample(new SynchronizedBankAccount(0));
+        end = System.currentTimeMillis();
+        System.out.println(String.format("Duration synchronized: " + (end - start)));
+
+        start = System.currentTimeMillis();
+        runBankExample(new StampedLockBankAccount(0));
+        end = System.currentTimeMillis();
+
+        System.out.println(String.format("Duration stamped lock: " + (end - start)));
+    }
+
+    private void runBankExample(BankAccount ba) throws InterruptedException {
+        Runnable work1 = () -> {
+            LongStream.range(0, 100000000).boxed().forEach((amount) -> {
+                ba.deposit(amount);
+
+            });
+        };
+
+        Runnable work2 = () -> {
+            LongStream.range(0, 100000000).boxed().forEach((amount) -> {
+                ba.withdraw(amount);
+
+            });
+        };
+
+        Thread thread = new Thread(work1);
+        thread.start();
+
+        Thread thread1 = new Thread(work2);
+        thread1.start();
+
+        thread.join();
+        thread1.join();
+
+        System.out.println(ba.getBalance());
     }
 }

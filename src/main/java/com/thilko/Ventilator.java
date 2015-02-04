@@ -2,10 +2,8 @@ package com.thilko;
 
 public interface Ventilator {
 
-    int defaultVentilationFrequency = 4;
-
     default void start(){
-        System.out.printf("Start ventilation with frequency " + defaultVentilationFrequency);
+        System.out.printf("Start ventilation");
     }
 
     default void stop(){

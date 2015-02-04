@@ -1,6 +1,6 @@
 package com.thilko.java8;
 
-public class H_Rest {
+public class I_Rest {
 
     // Access to Parameter Names at Runtime
     // Remove the Annotation-Processing Tool (apt)

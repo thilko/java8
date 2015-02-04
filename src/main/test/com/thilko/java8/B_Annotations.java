@@ -16,6 +16,7 @@ public class B_Annotations {
 
     // in java8 annotations are allowed everywhere where types occur
     // build type checker with this (http://types.cs.washington.edu/checker-framework/)
+    // http://www.infoq.com/articles/Type-Annotations-in-Java-8
 
     // in type declarations
     private List<@NotNull String> noNullsAllowedHere = new ArrayList<>();

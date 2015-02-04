@@ -3,7 +3,7 @@ package com.thilko;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 
-public class A500 implements Ventilator {
+public class V500 implements Ventilator {
 
     @Override
     public void start() {

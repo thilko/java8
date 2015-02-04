@@ -9,6 +9,9 @@ import java.lang.reflect.Field;
 
 public class D_Unsafe {
 
+    // Announcement: could become public api in java9
+    // new: support for memory fences
+
     // http://java.dzone.com/articles/understanding-sunmiscunsafe
     // http://bytescrolls.blogspot.de/2011/04/interesting-uses-of-sunmiscunsafe.html
     // https://code.google.com/p/objenesis/
