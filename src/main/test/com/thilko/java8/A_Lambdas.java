@@ -320,7 +320,7 @@ public class A_Lambdas {
     }
 
     private List<Customer> findAllCustomers() {
-        return null;
+        return new ArrayList<>();
     }
 
 }
